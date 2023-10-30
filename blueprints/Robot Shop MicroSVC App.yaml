@@ -4,7 +4,7 @@ description: >
     deployed on a K8S Cluster using Helm using an RDS DB and an S3 bucket
 instructions:
   source:
-    store: Torque-Samples
+    store: spec2_repo_blue
     path: instructions/Robot_Shop.md
 inputs:
   Robot Shop App Version:
@@ -39,10 +39,10 @@ grains:
     kind: terraform
     spec:
       source:
-        store: Torque-Samples
+        store: spec2_repo_blue
         path: assets/terraform/aws/rds
       agent:
-        name: Sample-Agent
+        name: eks
       inputs:
         - env_id: '{{ envid | downcase }}'
         - size: '{{ .inputs.["DB Engine Instance Size"] }}' 
@@ -60,10 +60,10 @@ grains:
     kind: helm
     spec: 
       source:
-        store: Torque-Samples
+        store: spec2_repo_blue
         path: assets/helm/s3__crossplane
       agent:
-        name: Sample-Agent
+        name: eks
       inputs:
         - AWSRegion: eu-west-1
         - BucketACL: private
@@ -72,7 +72,7 @@ grains:
       scripts:
         post-helm-install:
           source:
-            store: Torque-Samples
+            store: spec2_repo_blue
             path:  assets/scripts/get-bucket-arn.sh
           arguments: 'robotshop-s3-samples-{{ envid | downcase }}'
           outputs:
@@ -83,14 +83,14 @@ grains:
     depends-on: MySQL_RDS_DB, S3_Bucket__crossplane
     spec:
       source:
-        store: Torque-Samples
+        store: spec2_repo_blue
         path: assets/helm/robotShop
       agent:
-        name: Sample-Agent
+        name: eks
       scripts:
         post-helm-install:
           source:
-            store: Torque-Samples
+            store: spec2_repo_blue
             path:  assets/scripts/get-robot-web-address.sh
           arguments: '{{ envid | downcase }}'
           outputs:
